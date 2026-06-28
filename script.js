@@ -16,10 +16,11 @@ const noBtn = document.getElementById("noBtn");
 
 const funnyText = document.getElementById("funnyText");
 
-const walkingCat = document.getElementById("walkingCat");
 const envelope = document.getElementById("envelope");
 const letter = document.getElementById("letter");
 const letterText = document.getElementById("letterText");
+
+let celebrationStarted = false;
 
 // ----------------------
 // Loading Screen
@@ -48,17 +49,21 @@ const loader = setInterval(() => {
 // Music
 // ----------------------
 
-musicToggle.addEventListener("click", () => {
+musicToggle.addEventListener("click", async () => {
 
     if (music.paused) {
 
-        music.play();
-        musicToggle.innerHTML = "🔊 MUSIC";
+        try {
+            await music.play();
+            musicToggle.innerHTML = "🔇 STOP";
+        } catch (err) {
+            alert("Tap the MUSIC button again if playback is blocked.");
+        }
 
     } else {
 
         music.pause();
-        musicToggle.innerHTML = "🔇 MUSIC";
+        musicToggle.innerHTML = "🔊 MUSIC";
 
     }
 
@@ -84,13 +89,11 @@ cats.forEach(cat => {
 // ----------------------
 
 const funnyMessages = [
-
     "Nice try 😂",
     "The kitties said no 😹",
     "You can't catch me!",
     "Click YES instead ❤️",
     "Mission Impossible 😎"
-
 ];
 
 noBtn.addEventListener("mouseover", () => {
@@ -98,9 +101,9 @@ noBtn.addEventListener("mouseover", () => {
     const x = Math.random() * 250 - 125;
     const y = Math.random() * 180 - 90;
 
-    noBtn.style.transform = `translate(${x}px,${y}px)`;
+    noBtn.style.transform = `translate(${x}px, ${y}px)`;
 
-    funnyText.innerHTML =
+    funnyText.textContent =
         funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
 
 });
@@ -124,9 +127,11 @@ yesBtn.addEventListener("click", () => {
 
 function startLetter() {
 
+    envelope.style.display = "block";
     envelope.style.opacity = "0";
+
     letter.style.display = "none";
-    letterText.innerHTML = "";
+    letterText.textContent = "";
 
     setTimeout(() => {
 
@@ -173,7 +178,7 @@ function typeLetter() {
 
     const typer = setInterval(() => {
 
-        letterText.innerHTML += message.charAt(i);
+        letterText.textContent += message.charAt(i);
 
         i++;
 
@@ -186,7 +191,10 @@ function typeLetter() {
                 letterScreen.classList.add("hidden");
                 finalScreen.classList.remove("hidden");
 
-                celebrate();
+                if (!celebrationStarted) {
+                    celebrationStarted = true;
+                    celebrate();
+                }
 
             }, 2500);
 
@@ -207,7 +215,7 @@ function celebrate() {
         const heart = document.createElement("div");
 
         heart.className = "heart";
-        heart.innerHTML = "❤️";
+        heart.textContent = "❤️";
 
         heart.style.left = Math.random() * window.innerWidth + "px";
 
@@ -221,4 +229,4 @@ function celebrate() {
 
     }, 300);
 
-}
+            }
