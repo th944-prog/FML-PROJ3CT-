@@ -20,8 +20,6 @@ const envelope = document.getElementById("envelope");
 const letter = document.getElementById("letter");
 const letterText = document.getElementById("letterText");
 
-let celebrationStarted = false;
-
 // ----------------------
 // Loading Screen
 // ----------------------
@@ -51,19 +49,24 @@ const loader = setInterval(() => {
 
 musicToggle.addEventListener("click", async () => {
 
-    if (music.paused) {
+    try {
 
-        try {
+        if (music.paused) {
+
             await music.play();
             musicToggle.innerHTML = "🔇 STOP";
-        } catch (err) {
-            alert("Tap the MUSIC button again if playback is blocked.");
+
+        } else {
+
+            music.pause();
+            musicToggle.innerHTML = "🔊 MUSIC";
+
         }
 
-    } else {
+    } catch (err) {
 
-        music.pause();
-        musicToggle.innerHTML = "🔊 MUSIC";
+        console.log(err);
+        alert("Tap the screen once, then press MUSIC again.");
 
     }
 
@@ -75,7 +78,12 @@ musicToggle.addEventListener("click", async () => {
 
 cats.forEach(cat => {
 
-    cat.addEventListener("click", () => {
+    cat.addEventListener("click", async () => {
+
+        try {
+            await music.play();
+            musicToggle.innerHTML = "🔇 STOP";
+        } catch (e) {}
 
         homeScreen.classList.add("hidden");
         questionScreen.classList.remove("hidden");
@@ -89,11 +97,13 @@ cats.forEach(cat => {
 // ----------------------
 
 const funnyMessages = [
+
     "Nice try 😂",
     "The kitties said no 😹",
     "You can't catch me!",
     "Click YES instead ❤️",
     "Mission Impossible 😎"
+
 ];
 
 noBtn.addEventListener("mouseover", () => {
@@ -101,9 +111,9 @@ noBtn.addEventListener("mouseover", () => {
     const x = Math.random() * 250 - 125;
     const y = Math.random() * 180 - 90;
 
-    noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    noBtn.style.transform = `translate(${x}px,${y}px)`;
 
-    funnyText.textContent =
+    funnyText.innerHTML =
         funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
 
 });
@@ -127,11 +137,11 @@ yesBtn.addEventListener("click", () => {
 
 function startLetter() {
 
-    envelope.style.display = "block";
     envelope.style.opacity = "0";
+    envelope.style.display = "block";
 
     letter.style.display = "none";
-    letterText.textContent = "";
+    letterText.innerHTML = "";
 
     setTimeout(() => {
 
@@ -176,9 +186,11 @@ function typeLetter() {
 
     let i = 0;
 
+    letterText.innerHTML = "";
+
     const typer = setInterval(() => {
 
-        letterText.textContent += message.charAt(i);
+        letterText.innerHTML += message.charAt(i);
 
         i++;
 
@@ -191,10 +203,7 @@ function typeLetter() {
                 letterScreen.classList.add("hidden");
                 finalScreen.classList.remove("hidden");
 
-                if (!celebrationStarted) {
-                    celebrationStarted = true;
-                    celebrate();
-                }
+                celebrate();
 
             }, 2500);
 
@@ -215,7 +224,7 @@ function celebrate() {
         const heart = document.createElement("div");
 
         heart.className = "heart";
-        heart.textContent = "❤️";
+        heart.innerHTML = "❤️";
 
         heart.style.left = Math.random() * window.innerWidth + "px";
 
@@ -229,4 +238,4 @@ function celebrate() {
 
     }, 300);
 
-            }
+    }
